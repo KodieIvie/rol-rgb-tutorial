@@ -176,7 +176,12 @@
         const showFull = ref(false);
         const showClose = ref(false);
 
-        return { boardModels, steps, showPolarity, showFull, showClose };
+        const openLink = (url) => {
+          const newTab = window.open(url, '_blank', 'noopener,noreferrer');
+          if (newTab) window.focus(); // keep the guide in view
+        };
+
+        return { boardModels, steps, showPolarity, showFull, showClose, openLink };
       },
       template: `
         <v-app>
@@ -196,7 +201,7 @@
                       </div>
                     </div>
                     <div class="d-flex flex-column gap-2">
-                      <h1 class="text-h4 text-sm-h3 font-weight-bold hero-title">Make Your Ring of Light Dance</h1>
+                      <h1 class="text-h4 text-sm-h3 font-weight-bold hero-title">Bring Your Ring of Light To Life</h1>
                       <p class="text-body-1" style="max-width: 720px; color: #cfe4d4;">
                         A quick, fun mod that adds one 1µF capacitor per quadrant pair of IC RGB LEDs on the RF board (center power LED doesn't need one). The capacitor keeps the LED’s tiny onboard IC from resetting so your colors can actually change instead of freezing. Polarity matters hard: model 1410 = capacitor to LED negative (cathode), model 1409 = capacitor to LED positive (anode). The walkthrough below shows the 1410 orientation, plus a regular red LED parked to the right of the power LED for RROD alerts.
                       </p>
@@ -206,6 +211,7 @@
                           target="_blank"
                           rel="noopener noreferrer"
                           class="buy-card"
+                          @click.prevent="openLink('https://www.aliexpress.us/item/3256806285351310.html?spm=a2g0o.order_list.order_list_main.5.6af11802iTjqMx&gatewayAdapt=glo2usa')"
                         >
                           <img src="assets/rgbLed.avif" alt="RGB LED pack" class="buy-thumb">
                           <div>
@@ -220,6 +226,7 @@
                           rel="noopener noreferrer"
                           class="buy-card"
                           style="border-color: rgba(102, 227, 110, 0.3);"
+                          @click.prevent="openLink('https://www.aliexpress.us/item/3256807278239101.html?spm=a2g0o.productlist.main.1.3e2fo7qHo7qHVz&algo_pvid=f8a9f8c9-0315-417b-ac89-1a89b0258ddd&algo_exp_id=f8a9f8c9-0315-417b-ac89-1a89b0258ddd-0&pdp_ext_f=%7B%22order%22%3A%221756%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21USD%211.99%210.99%21%21%2113.81%216.85%21%402101364d17676545422331393e0192%2112000040865339091%21sea%21US%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A3092c48b%3Bm03_new_user%3A-29895%3BpisId%3A5000000197847478&curPageLogUid=R8eqhIKXqKdC&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005007464553853%7C_p_origin_prod%3A')"
                         >
                           <v-icon size="28" color="var(--xbox-green)">mdi-resistor</v-icon>
                           <div>
