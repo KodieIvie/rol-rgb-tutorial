@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Xbox 360 ROL RGB Tutorial</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.5.9/dist/vuetify.min.css">
+  <style>
+    :root {
+      --ink: #0f1610;
+      --xbox-green: #66e36e;
+      --glow: rgba(102, 227, 110, 0.35);
+      --surface: #10181b;
+      --accent: #42a5f5;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Space Grotesk', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: radial-gradient(circle at 15% 20%, rgba(102, 227, 110, 0.08), transparent 35%),
+                  radial-gradient(circle at 80% 0%, rgba(66, 165, 245, 0.14), transparent 40%),
+                  linear-gradient(135deg, #0b1113, #0c0f13 40%, #0d1316);
+      color: #e8f2ec;
+      min-height: 100vh;
+    }
+    #app { min-height: 100vh; }
+    .glass {
+      background: linear-gradient(135deg, rgba(16, 24, 27, 0.8), rgba(16, 24, 27, 0.65));
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(102, 227, 110, 0.1);
+      backdrop-filter: blur(10px);
+    }
+    .orb {
+      position: absolute;
+      width: 180px;
+      height: 180px;
+      border-radius: 50%;
+      filter: blur(60px);
+      opacity: 0.35;
+      pointer-events: none;
+      animation: float 12s ease-in-out infinite alternate;
+    }
+    .orb.green { background: var(--glow); top: 8%; left: 6%; }
+    .orb.blue { background: rgba(66, 165, 245, 0.28); bottom: 10%; right: 6%; animation-delay: 2s; }
+    @keyframes float { to { transform: translateY(12px) translateX(6px); } }
+    .hero-title {
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+    .chip {
+      border-radius: 999px;
+      padding: 6px 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(102, 227, 110, 0.1);
+      color: #c7f7ce;
+    }
+    .video-wrapper video, .video-wrapper img {
+      border-radius: 16px;
+      width: 100%;
+      height: auto;
+      display: block;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+    .section-title {
+      font-weight: 600;
+      letter-spacing: 0.01em;
+      color: #f4fff6;
+    }
+    .step-card {
+      border: 1px solid rgba(255, 255, 255, 0.07);
+    }
+    .note {
+      border-left: 4px solid var(--xbox-green);
+      padding-left: 12px;
+    }
+    .buy-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      text-decoration: none;
+      color: #e8f2ec;
+      border: 1px solid rgba(66, 165, 245, 0.3);
+      box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+      background: linear-gradient(135deg, rgba(66, 165, 245, 0.14), rgba(102, 227, 110, 0.12));
+      width: fit-content;
+    }
+    .buy-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(102, 227, 110, 0.65);
+      box-shadow: 0 16px 32px rgba(0, 0, 0, 0.45);
+    }
+    .buy-thumb {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      object-fit: cover;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(0,0,0,0.25);
+    }
+    .img-contain .v-img__img {
+      object-fit: contain !important;
+      object-position: center;
+    }
+    .img-contain {
+      background: #0f1610;
+    }
+    footer {
+      opacity: 0.72;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div class="orb green"></div>
+  <div class="orb blue"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.4.27/dist/vue.global.prod.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.5.9/dist/vuetify.min.js"></script>
+  <script>
+    const { createApp, ref } = Vue;
+    const { createVuetify } = Vuetify;
+
+    const app = createApp({
+      setup() {
+        const boardModels = [
+          { name: '1410 RF board', polarity: 'Capacitor lead goes to the LED negative pad (cathode).', note: 'Photos below show this polarity.' },
+          { name: '1409 RF board', polarity: 'Capacitor lead goes to the LED positive pad (anode).', note: 'Flip the capacitor compared to the photos.' },
+        ];
+
+        const steps = [
+          {
+            title: 'Prep your workspace',
+            detail: 'You only need a 1µF capacitor per quadrant, fine tip iron, flux, and patience.',
+            icon: 'mdi-lightning-bolt-outline',
+          },
+          {
+            title: 'Expose a clean pad',
+            detail: 'Use a fiberglass pen or sharp blade to scrape a small window of solder mask near the LED pad where the other side of the capacitor will land. Keep it tidy—just enough copper to solder.',
+            icon: 'mdi-shield-remove-outline',
+          },
+          {
+            title: 'Tin and place the capacitor',
+            detail: 'Pre-tin the LED pad and the freshly exposed copper. Drop the 1µF capacitor in with the correct polarity (see the model guide). Add a tiny touch of solder to lock it.',
+            icon: 'mdi-vector-polygon',
+          },
+          {
+            title: 'Reflow the LED leads',
+            detail: 'Touch up the LED joints so both the LED and capacitor share solid contact. Avoid flooding the pad—thin, shiny joints are your friend.',
+            icon: 'mdi-fire',
+          },
+          {
+            title: 'Test and enjoy the glow',
+            detail: 'Power on and watch the ring of light. Fast flash = rapid color pulses; slow flash = mellow breathing effect. If it looks off, recheck polarity and bridges.',
+            icon: 'mdi-gamepad-square-outline',
+          },
+        ];
+
+        const showPolarity = ref(false);
+        const showFull = ref(false);
+        const showClose = ref(false);
+
+        return { boardModels, steps, showPolarity, showFull, showClose };
+      },
+      template: `
+        <v-app>
+          <v-main>
+            <v-container class="py-12" fluid>
+              <v-row justify="center" class="mb-8">
+                <v-col cols="12" md="10" lg="8">
+                  <v-sheet class="glass pa-8 rounded-lg">
+                    <div class="d-flex align-center justify-space-between flex-wrap gap-4 mb-4">
+                      <div class="chip">
+                        <v-icon size="18" color="var(--xbox-green)">mdi-brightness-7</v-icon>
+                        Xbox 360 ROL RGB
+                      </div>
+                      <div class="chip" style="background: rgba(66,165,245,0.16); color: #d3e9ff;">
+                        <v-icon size="18" color="var(--accent)">mdi-memory</v-icon>
+                        1µF Cap Hack
+                      </div>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                      <h1 class="text-h4 text-sm-h3 font-weight-bold hero-title">Make Your Ring of Light Dance</h1>
+                      <p class="text-body-1" style="max-width: 720px; color: #cfe4d4;">
+                        A quick, fun mod that adds one 1µF capacitor per quadrant pair of LEDs on the RF board (center power LED stays stock). The capacitor keeps the LED’s tiny onboard IC from resetting so your colors can actually change instead of freezing. Polarity matters hard: model 1410 = capacitor to LED negative (cathode), model 1409 = capacitor to LED positive (anode). The walkthrough below shows the 1410 orientation, plus a regular red LED parked to the right of the power LED for RROD alerts.
+                      </p>
+                      <a
+                        href="https://www.aliexpress.us/item/3256806285351310.html?spm=a2g0o.order_list.order_list_main.5.6af11802iTjqMx&gatewayAdapt=glo2usa"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="buy-card"
+                      >
+                        <img src="assets/rgbLed.avif" alt="RGB LED pack" class="buy-thumb">
+                        <div>
+                          <div class="text-subtitle-2 font-weight-bold">Buy the RGB LEDs (slow or fast flash)</div>
+                          <div class="text-body-2" style="color: #d3e9ff;">Opens in a new tab so you can stay on the guide.</div>
+                        </div>
+                        <v-icon size="22" color="var(--accent)">mdi-open-in-new</v-icon>
+                      </a>
+                    </div>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+
+              <v-row class="mb-10" justify="center" dense>
+                <v-col cols="12" md="5" class="video-wrapper">
+                  <v-sheet class="glass pa-4 rounded-lg">
+                    <h2 class="section-title text-h6 mb-3 d-flex align-center gap-2">
+                      <v-icon color="var(--xbox-green)">mdi-flash</v-icon>
+                      Fast Flash Demo
+                    </h2>
+                    <video controls muted autoplay loop playsinline preload="metadata" poster="assets/1410 slim.JPG">
+                      <source src="assets/fastFlash.MOV" type="video/quicktime">
+                      <source src="assets/fastFlash.MOV" type="video/mp4">
+                      Your browser cannot play this clip.
+                    </video>
+                  </v-sheet>
+                </v-col>
+                <v-col cols="12" md="5" class="video-wrapper">
+                  <v-sheet class="glass pa-4 rounded-lg">
+                    <h2 class="section-title text-h6 mb-3 d-flex align-center gap-2">
+                      <v-icon color="var(--accent)">mdi-pulse</v-icon>
+                      Slow Flash Demo
+                    </h2>
+                    <video controls muted autoplay loop playsinline preload="metadata" poster="assets/1410 slim.JPG">
+                      <source src="assets/slowFlash.mp4" type="video/mp4">
+                      Your browser cannot play this clip.
+                    </video>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+
+              <v-row justify="center" class="mb-8">
+                <v-col cols="12" md="10" lg="8">
+                  <v-sheet class="glass pa-6 rounded-lg">
+                    <div class="d-flex align-center justify-space-between flex-wrap gap-4 mb-3">
+                      <h2 class="section-title text-h5 mb-0">Board Models & Polarity</h2>
+                      <div class="chip" style="background: rgba(255, 99, 99, 0.14); color: #ffdede;">
+                        <v-icon size="18" color="#ff9f9f">mdi-alert-circle</v-icon>
+                        Capacitor mounted position flips between 1410 (negative) and 1409 (positive)
+                      </div>
+                    </div>
+                    <v-row>
+                      <v-col cols="12" md="8">
+                        <v-list bg-color="transparent" lines="two" density="comfortable">
+                          <v-list-item v-for="model in boardModels" :key="model.name" class="rounded-lg step-card mb-2">
+                            <template #prepend>
+                              <v-avatar size="36" color="rgba(102,227,110,0.12)">
+                                <v-icon color="var(--xbox-green)">mdi-chip</v-icon>
+                              </v-avatar>
+                            </template>
+                            <v-list-item-title class="text-subtitle-1 font-weight-bold">{{ model.name }}</v-list-item-title>
+                            <v-list-item-subtitle class="text-body-2">{{ model.polarity }}</v-list-item-subtitle>
+                            <div class="text-body-2 text-medium-emphasis">{{ model.note }}</div>
+                          </v-list-item>
+                        </v-list>
+                        <div class="note mt-4">
+                          <p class="text-body-2 mb-1"><strong>1410 shown:</strong> The photos below match the 1410 orientation (capacitor on the LED cathode).</p>
+                          <p class="text-body-2 mb-1">You only need one 1µF capacitor per quadrant pair; the center power LED doesn’t get one.</p>
+                          <p class="text-body-2 mb-0">For 1409, flip the capacitor to the LED anode and keep everything else the same (still one cap per quadrant pair).</p>
+                        </div>
+                      </v-col>
+                      <v-col cols="12" md="4">
+                        <v-img
+                          src="assets/slim polarity.png"
+                          aspect-ratio="1"
+                          class="rounded-lg step-card img-contain"
+                          @click="showPolarity = true"
+                          style="cursor: zoom-in;"
+                        ></v-img>
+                      </v-col>
+                    </v-row>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+
+              <v-row justify="center" class="mb-10">
+                <v-col cols="12" md="10" lg="8">
+                  <v-sheet class="glass pa-6 rounded-lg">
+                    <div class="d-flex align-center justify-space-between flex-wrap gap-4 mb-6">
+                      <h2 class="section-title text-h5 mb-0">Install Walkthrough</h2>
+                      <div class="chip" style="background: rgba(255,255,255,0.06); color: #e8f2ec;">
+                        <v-icon size="18" color="var(--accent)">mdi-timer-outline</v-icon>
+                        5 quick beats
+                      </div>
+                    </div>
+                    <v-timeline side="end" align="start" density="comfortable" line-inset="12" truncate-line="start">
+                      <v-timeline-item
+                        v-for="(step, i) in steps"
+                        :key="step.title"
+                        :dot-color="i === 4 ? 'var(--xbox-green)' : 'var(--accent)'"
+                        :icon="step.icon"
+                        size="42"
+                        fill-dot
+                        class="mb-4"
+                      >
+                        <v-card class="pa-4 step-card">
+                          <div class="d-flex justify-space-between align-center flex-wrap gap-2">
+                            <div class="text-subtitle-1 font-weight-bold">{{ step.title }}</div>
+                            <div class="chip" style="background: rgba(102,227,110,0.08);" v-if="i === 4">Play time</div>
+                          </div>
+                          <div class="text-body-2 mt-2 text-medium-emphasis">{{ step.detail }}</div>
+                        </v-card>
+                      </v-timeline-item>
+                    </v-timeline>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+
+              <v-row justify="center" class="mb-10">
+                <v-col cols="12" md="5">
+                  <v-sheet class="glass pa-4 rounded-lg h-100">
+                    <h3 class="section-title text-h6 mb-3">1410 Reference (Full)</h3>
+                    <v-img
+                      src="assets/1410 slim.JPG"
+                      aspect-ratio="1"
+                      class="rounded-lg step-card img-contain"
+                      @click="showFull = true"
+                      style="cursor: zoom-in;"
+                    ></v-img>
+                    <p class="text-body-2 mt-3 text-medium-emphasis">
+                      Shows the overall layout for the 1410 RF board. Capacitor sits on the LED anode in this view.
+                    </p>
+                  </v-sheet>
+                </v-col>
+                <v-col cols="12" md="5">
+                  <v-sheet class="glass pa-4 rounded-lg h-100">
+                    <h3 class="section-title text-h6 mb-3">Close-up</h3>
+                    <v-img
+                      src="assets/1410 slim upclose.jpg"
+                      aspect-ratio="1"
+                      class="rounded-lg step-card img-contain"
+                      @click="showClose = true"
+                      style="cursor: zoom-in;"
+                    ></v-img>
+                    <p class="text-body-2 mt-3 text-medium-emphasis">
+                      Tight shot of the capacitor anchored to the LED pad. Notice the cleared solder mask for the second lead.
+                    </p>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+
+              <v-dialog v-model="showPolarity" max-width="900">
+                <v-card class="pa-2">
+                  <v-img src="assets/slim polarity.png" class="img-contain" aspect-ratio="1"></v-img>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="showFull" max-width="1100">
+                <v-card class="pa-2">
+                  <v-img src="assets/1410 slim.JPG" class="img-contain" aspect-ratio="1"></v-img>
+                </v-card>
+              </v-dialog>
+              <v-dialog v-model="showClose" max-width="1100">
+                <v-card class="pa-2">
+                  <v-img src="assets/1410 slim upclose.jpg" class="img-contain" aspect-ratio="1"></v-img>
+                </v-card>
+              </v-dialog>
+
+              <v-row justify="center" class="mb-8">
+                <v-col cols="12" md="10" lg="8">
+                  <v-sheet class="glass pa-5 rounded-lg">
+                    <div class="d-flex align-center gap-2 mb-3">
+                      <v-icon color="var(--xbox-green)">mdi-check-decagram</v-icon>
+                      <h3 class="section-title text-h6 mb-0">Quick success checks</h3>
+                    </div>
+                    <v-list bg-color="transparent" density="comfortable">
+                      <v-list-item class="step-card rounded-lg mb-2">
+                        <v-list-item-title class="text-body-2">
+                          No bridges between LED pads, and the capacitor lead matches your board model’s polarity.
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item class="step-card rounded-lg mb-2">
+                        <v-list-item-title class="text-body-2">
+                          The scraped copper is fully covered by solder—no exposed copper left to oxidize.
+                        </v-list-item-title>
+                      </v-list-item>
+                      <v-list-item class="step-card rounded-lg mb-2">
+                        <v-list-item-title class="text-body-2">
+                          Ring of light animates smoothly: fast flash for punchy pulses, slow flash for chill breathing.
+                        </v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+                  </v-sheet>
+                </v-col>
+              </v-row>
+
+              <v-row justify="center" class="pb-12">
+                <v-col cols="12" md="10" lg="8">
+                  <footer class="text-center text-body-2">
+                    Built for modders who like their LEDs unique. Keep the pads clean, and have fun.
+                  </footer>
+                </v-col>
+              </v-row>
+            </v-container>
+          </v-main>
+        </v-app>
+      `,
+    });
+
+    const vuetify = createVuetify({
+      theme: {
+        defaultTheme: 'dark',
+        themes: {
+          dark: {
+            colors: {
+              background: '#0b1113',
+              surface: '#0f1610',
+              primary: '#66e36e',
+              secondary: '#42a5f5',
+              error: '#ff6b6b',
+              info: '#66e36e',
+              success: '#66e36e',
+            },
+          },
+        },
+      },
+      defaults: {
+        VCard: { elevation: 0 },
+      },
+    });
+
+    app.use(vuetify).mount('#app');
+  </script>
+</body>
+</html>
