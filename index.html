@@ -195,19 +195,35 @@
                       <p class="text-body-1" style="max-width: 720px; color: #cfe4d4;">
                         A quick, fun mod that adds one 1µF capacitor per quadrant pair of LEDs on the RF board (center power LED stays stock). The capacitor keeps the LED’s tiny onboard IC from resetting so your colors can actually change instead of freezing. Polarity matters hard: model 1410 = capacitor to LED negative (cathode), model 1409 = capacitor to LED positive (anode). The walkthrough below shows the 1410 orientation, plus a regular red LED parked to the right of the power LED for RROD alerts.
                       </p>
-                      <a
-                        href="https://www.aliexpress.us/item/3256806285351310.html?spm=a2g0o.order_list.order_list_main.5.6af11802iTjqMx&gatewayAdapt=glo2usa"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="buy-card"
-                      >
-                        <img src="assets/rgbLed.avif" alt="RGB LED pack" class="buy-thumb">
-                        <div>
-                          <div class="text-subtitle-2 font-weight-bold">Buy the RGB LEDs (slow or fast flash)</div>
-                          <div class="text-body-2" style="color: #d3e9ff;">Opens in a new tab so you can stay on the guide.</div>
-                        </div>
-                        <v-icon size="22" color="var(--accent)">mdi-open-in-new</v-icon>
-                      </a>
+                      <div class="d-flex flex-column gap-2">
+                        <a
+                          href="https://www.aliexpress.us/item/3256806285351310.html?spm=a2g0o.order_list.order_list_main.5.6af11802iTjqMx&gatewayAdapt=glo2usa"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="buy-card"
+                        >
+                          <img src="assets/rgbLed.avif" alt="RGB LED pack" class="buy-thumb">
+                          <div>
+                            <div class="text-subtitle-2 font-weight-bold">Buy the RGB LEDs (slow or fast flash)</div>
+                            <div class="text-body-2" style="color: #d3e9ff;">Opens in a new tab so you can stay on the guide.</div>
+                          </div>
+                          <v-icon size="22" color="var(--accent)">mdi-open-in-new</v-icon>
+                        </a>
+                        <a
+                          href="https://www.aliexpress.us/item/3256807278239101.html?spm=a2g0o.productlist.main.1.3e2fo7qHo7qHVz&algo_pvid=f8a9f8c9-0315-417b-ac89-1a89b0258ddd&algo_exp_id=f8a9f8c9-0315-417b-ac89-1a89b0258ddd-0&pdp_ext_f=%7B%22order%22%3A%221756%22%2C%22eval%22%3A%221%22%2C%22fromPage%22%3A%22search%22%7D&pdp_npi=6%40dis%21USD%211.99%210.99%21%21%2113.81%216.85%21%402101364d17676545422331393e0192%2112000040865339091%21sea%21US%210%21ABX%211%210%21n_tag%3A-29910%3Bd%3A3092c48b%3Bm03_new_user%3A-29895%3BpisId%3A5000000197847478&curPageLogUid=R8eqhIKXqKdC&utparam-url=scene%3Asearch%7Cquery_from%3A%7Cx_object_id%3A1005007464553853%7C_p_origin_prod%3A"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          class="buy-card"
+                          style="border-color: rgba(102, 227, 110, 0.3);"
+                        >
+                          <v-icon size="28" color="var(--xbox-green)">mdi-resistor</v-icon>
+                          <div>
+                            <div class="text-subtitle-2 font-weight-bold">Grab the 1µF capacitors</div>
+                            <div class="text-body-2" style="color: #d3e9ff;">One per quadrant pair; opens in a new tab.</div>
+                          </div>
+                          <v-icon size="22" color="var(--xbox-green)">mdi-open-in-new</v-icon>
+                        </a>
+                      </div>
                     </div>
                   </v-sheet>
                 </v-col>
@@ -398,7 +414,7 @@
               <v-row justify="center" class="pb-12">
                 <v-col cols="12" md="10" lg="8">
                   <footer class="text-center text-body-2">
-                    Built for modders who like their LEDs unique. Keep the pads clean, and have fun.
+                    Built for modders who like their LEDs. Keep the pads clean, and have fun.
                   </footer>
                 </v-col>
               </v-row>
