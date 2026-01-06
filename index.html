@@ -146,6 +146,11 @@
             icon: 'mdi-lightning-bolt-outline',
           },
           {
+            title: 'Install the RGB LEDs',
+            detail: 'Solder in the slow/fast-flash LEDs just like any standard LED—match polarity to the board silkscreen/anode-cathode marks.',
+            icon: 'mdi-led-strip',
+          },
+          {
             title: 'Expose a clean pad',
             detail: 'Use a fiberglass pen or sharp blade to scrape a small window of solder mask near the LED pad where the other side of the capacitor will land. Keep it tidy—just enough copper to solder.',
             icon: 'mdi-shield-remove-outline',
@@ -193,7 +198,7 @@
                     <div class="d-flex flex-column gap-2">
                       <h1 class="text-h4 text-sm-h3 font-weight-bold hero-title">Make Your Ring of Light Dance</h1>
                       <p class="text-body-1" style="max-width: 720px; color: #cfe4d4;">
-                        A quick, fun mod that adds one 1µF capacitor per quadrant pair of LEDs on the RF board (center power LED stays stock). The capacitor keeps the LED’s tiny onboard IC from resetting so your colors can actually change instead of freezing. Polarity matters hard: model 1410 = capacitor to LED negative (cathode), model 1409 = capacitor to LED positive (anode). The walkthrough below shows the 1410 orientation, plus a regular red LED parked to the right of the power LED for RROD alerts.
+                        A quick, fun mod that adds one 1µF capacitor per quadrant pair of IC RGB LEDs on the RF board (center power LED doesn't need one). The capacitor keeps the LED’s tiny onboard IC from resetting so your colors can actually change instead of freezing. Polarity matters hard: model 1410 = capacitor to LED negative (cathode), model 1409 = capacitor to LED positive (anode). The walkthrough below shows the 1410 orientation, plus a regular red LED parked to the right of the power LED for RROD alerts.
                       </p>
                       <div class="d-flex flex-column gap-2">
                         <a
